@@ -1,0 +1,20 @@
+services:
+  stf-provider:
+    image: devicefarmer/stf
+    privileged: true
+    network_mode: host  # упрощает доступ к USB
+    environment:
+      - STF_SECRET={STF_SECRET}
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    command: >
+      stf provider
+      --name remote-provider-1
+      --connect-sub tcp://{MANAGER_HOST}:7250
+      --connect-push tcp://{MANAGER_HOST}:7270
+      --connect-sub-dev tcp://{MANAGER_HOST}:7251
+      --connect-push-dev tcp://{MANAGER_HOST}:7271
+      --group remote
+      --public-ip {PROVIDER_PUBLIC_IP}
+      --screen-ws-url-pattern "wss://DOMAIN/d/screen/[[serial]]/[[namespace]]"
+      --secret {STF_SECRET}
